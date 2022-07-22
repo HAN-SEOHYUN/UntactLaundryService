@@ -95,7 +95,7 @@ const BoardDetail = ({detailNo, userInfo, contentList, deleteModalOut}) => {
 
 
     const deleteBoard = useCallback(() => {
-        BoardService.boardDeleteNo(detailNo, userInfo.no)
+        BoardService.boardDeleteNo(detailNo, data.usersNo)
             .then((response) => {
                 console.log(response.data);
                 alert(response.data.message);
@@ -151,12 +151,14 @@ const BoardDetail = ({detailNo, userInfo, contentList, deleteModalOut}) => {
     const dateReturn = useCallback((date) => {
         return `${date.getFullYear()}-${(date.getMonth() + 1) >= 10 ?
             (date.getMonth() + 1) : ("0" + (date.getMonth() + 1))}-${date.getDate() >= 10 ?
-            date.getDate() : ("0" + date.getDate())}  ${date.getHours()}:${date.getMinutes()}`
+            date.getDate() : ("0" + date.getDate())}  ${date.getHours() >= 10 ?
+            date.getHours() : ("0" + date.getHours())}:${date.getMinutes() >= 10 ?
+            date.getMinutes() : ("0" + date.getMinutes())}`
     });
 
     const controllerBtn = (
         <div className="board-controll-btn">
-            <button onClick={() => setEditMode(!editMode)}>{editMode ? "취소" : "수정"}</button>
+            {parseInt(userInfo.no) === data.usersNo && (<button onClick={() => setEditMode(!editMode)}>{editMode ? "취소" : "수정"}</button>)}
             {editMode ? (
                 <button className="update-btn" onClick={updateBoard}>수정</button>) :
                 (<button className="delete-btn" onClick={deleteBoard}>삭제</button>)}
@@ -182,7 +184,7 @@ const BoardDetail = ({detailNo, userInfo, contentList, deleteModalOut}) => {
                         <span id="regdate">{dateReturn(new Date(data.regdate))}</span>
                         &nbsp;&nbsp; 조회<span id="viewCount">{data.viewCount}</span>
                     </div>
-                    {parseInt(userInfo.no) === data.usersNo && controllerBtn}
+                    {(parseInt(userInfo.no) === data.usersNo || parseInt(userInfo.userCode) === 4 || parseInt(userInfo.userCode) === 3) && controllerBtn}
                 </div>
                 {fileChk &&
                     <div className="file-down-part">
@@ -197,7 +199,7 @@ const BoardDetail = ({detailNo, userInfo, contentList, deleteModalOut}) => {
                     (<div dangerouslySetInnerHTML={{__html: (data.content)}}></div>)
                 }
             </div>
-            <BoardComment detailNo={detailNo} userInfo={userInfo} apiBoard={apiBoard}/>
+            {categoryNo.includes("A") || <BoardComment dateReturn={dateReturn} detailNo={detailNo} userInfo={userInfo} apiBoard={apiBoard}/>}
         </div>
     );
 };

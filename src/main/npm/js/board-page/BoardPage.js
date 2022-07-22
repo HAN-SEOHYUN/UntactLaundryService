@@ -3,7 +3,17 @@ import BoardList from "./components/BoardList";
 import BoardTitle from "./components/BoardTitle";
 
 const BoardPage = () => {
-    const [userInfo, setUserInfo] = useState("");   //유저 정보
+    const initialData = {
+        email: "",
+        hp: "",
+        name: "",
+        no: 0,
+        point: 0,
+        userCode: 0,
+    }
+
+
+    const [userInfo, setUserInfo] = useState(initialData);   //유저 정보
     const [contentData, setContentData] = useState(""); //게시글 관련 Json객체를 넣어줌
     const [page, setPage] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -21,8 +31,10 @@ const BoardPage = () => {
             url: "/launer/board/userInfo",
             type: "JSON",
             method: "GET",
+            data: `categoryNo=${categoryNo}&`,
             success: (res) => {
-                setUserInfo(res);
+                // setUserInfo(res);
+                userInfoClassSet(res);
                 console.log(res);
             },
             error: (xhr, status, error) => alert(`error : ${error}`)
@@ -34,6 +46,16 @@ const BoardPage = () => {
     useEffect(() => {
         contentList();
     }, [currentPage, searchKeyword, searchCondition]);
+
+    const userInfoClassSet = useCallback((res) => {
+        const tempUserCode = res.usersClassNo ? true : false;
+        console.log(tempUserCode);
+
+        const tempUserInfo = tempUserCode ? {...res, userCode : res.usersClassNo} : {...res};
+        console.log(tempUserInfo);
+
+        setUserInfo(tempUserInfo);
+    })
 
     const contentList = useCallback(() => {
         const data = {
@@ -49,7 +71,7 @@ const BoardPage = () => {
            data: data,
            success: (res) => {
                if(res.SUCCESS) {
-                   console.log(res.jsonData);
+                   console.log(res);
                    setContentData(res.jsonData);
                    setPagingInfo(res.pagingInfo);
                    pagingSet(res.pagingInfo);
@@ -61,7 +83,9 @@ const BoardPage = () => {
 
     const currentPageEvent = useCallback((e) => {
         console.log(`받아온 e=${e}`);
-        if(pagingInfo.firstPage-1 < e && e < pagingInfo.totalPage+1) setCurrentPage(e);
+        console.log(`pagingInfo.firstPage=${pagingInfo.firstPage-1}`);
+        console.log(`pagingInfo.totalPage=${pagingInfo.totalPage+1}`);
+        if(0 < e && e < pagingInfo.totalPage+1) setCurrentPage(e);
     });
 
     const pagingSet = useCallback((jSonpagingInfo) => {

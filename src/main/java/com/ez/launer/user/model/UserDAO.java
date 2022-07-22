@@ -14,6 +14,7 @@ public interface UserDAO {
 	public int insertUser(UserAllVO vo);
 	public int insertAddress(UserAllVO vo);
 	public int chkEmail(String email);
+	public int chkSocial(String email);
 	public int chkHp(String hp);
 	public int insertDriver(DriverAllVO vo);
 	public int insertAccount(DriverAllVO vo);
@@ -48,10 +49,12 @@ public interface UserDAO {
 	int insertBranchManager(UserVO userVo);
 	public List<UserVO> withdrawUsers();
 	int insertToday (Map<String,Object> map);
+	int kakaoRejoin (UserVO userVo);
 
 
 	/* 박권순 */
 	int insertSnsUser(UserVO userVO);
+	int socialReJoin(int no);
 	
 
 }

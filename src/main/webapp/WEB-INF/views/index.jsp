@@ -9,38 +9,35 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags/layouts/user" %>
 
 <t:wrapper>
-    <%@taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <script src="<c:url value="/js/raindrops.js"/>" type="text/javascript" text="javascript"></script>
     <script src="<c:url value="/js/main.js"/>"></script>
-    <script type="text/javascript">
-        console.log();
-    </script>
     <div id="main-wrap">
         <aside id="main-list-bar">
             <div class="line"></div>
-            <div class="part-one part on">
+            <div class="part-one part firstClass" data-value="p-one">
                 <div class="main-list-bar-on"></div>
                 <p class="num">1</p>
-                <div class="sub">소<br />개</div>
+                <div class="sub">메<br />인</div>
             </div>
             <div class="line"></div>
-            <div class="part-two part">
+            <div class="part-two part" data-value="p-two">
                 <div class="main-list-bar-on"></div>
                 <p class="num">2</p>
-                <div class="sub">소<br />개</div>
+                <div class="sub">회<br />원<br />가<br />입</div>
             </div>
             <div class="line"></div>
-            <div class="part-three part">
+            <div class="part-three part" data-value="p-three">
                 <div class="main-list-bar-on"></div>
                 <p class="num">3</p>
                 <div class="sub">소<br />개</div>
             </div>
             <div class="line"></div>
-            <div class="part-four part">
+            <div class="part-four part" data-value="p-four">
                 <div class="main-list-bar-on"></div>
                 <p class="num">4</p>
-                <div class="sub">테<br/>스<br/>트</div>
+                <div class="sub">꿀<br/>팁</div>
             </div>
         </aside>
         <div class="con-wrap">
@@ -97,21 +94,21 @@
                         <div class="text">
                             <div class="first">
                                 <div class="element">
-                                    <div class="icon"><img style="width:230; height:160;" alt="비대면 세탁" src="${pageContext.request.contextPath}/images/test1.png"></div>
+                                    <div class="icon"><img alt="비대면 세탁" src="${pageContext.request.contextPath}/images/test1.png"></div>
                                     <span class="sub-text">비대면 세탁</span>
                                 </div>
                                 <div class="element">
-                                    <div class="icon"><img style="width:230; height:160;" alt="신속한 배송" src="${pageContext.request.contextPath}/images/test3.png"></div>
+                                    <div class="icon"><img alt="신속한 배송" src="${pageContext.request.contextPath}/images/test3.png"></div>
                                     <span class="sub-text">신속한 배송</span>
                                 </div>
                                 <div class="element">
-                                    <div class="icon"><img style="width:230; height:160;" alt="실시간 현황" src="${pageContext.request.contextPath}/images/test5.png"></div>
+                                    <div class="icon"><img alt="실시간 현황" src="${pageContext.request.contextPath}/images/test5.png"></div>
                                     <span class="sub-text">실시간 현황</span>
                                 </div>
                             </div>
                             <div class="second">
                                 <div class="title">
-                                   <img style="width:432; height:220;" alt="배송기사 모집" src="${pageContext.request.contextPath}/images/test20.png">
+                                   <img alt="배송기사 모집" src="${pageContext.request.contextPath}/images/test20.png">
                                    <p style="text-align: center;">러너 배송기사 상시모집중</p>
                                 </div>
                             </div>
@@ -129,12 +126,13 @@
                             <div class="text-box r">
                                 <h4 class="sub-title-font">간단한 이용방법</h4>
                                 <span>주문 후, 수거한 다음 24시간 이내로 문 앞에 배송됩니다.</span>
-                                <a href="#">
+                                <a data-bs-toggle="modal" data-bs-target="#exampleModal" href="<c:url value="/laundryService/order/guide"/>">
                                     <div class="hover-btn"></div>
                                     <p>자세히 알아보기</p>
                                 </a>
                             </div>
                         </article>
+
                         <article class="part clearfix">
                             <div class="text-box l">
                                 <h4 class="sub-title-font">합리적 가격</h4>
@@ -164,16 +162,21 @@
                     <div class="swiper mySwiper">
                         <div class="swiper-wrapper">
                             <%-- <div class="swiper-slide"><img style="width:920; height:500;" alt="세탁팁1" src="${pageContext.request.contextPath}/images/test11.png"></div>--%>
-                            <div class="swiper-slide" style="overflow: hidden;"><iframe width="100%" height="100%" src="https://www.youtube.com/embed/tKZQuO1sN3Y" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-                            <div class="swiper-slide" style="overflow: hidden;"><iframe width="100%" height="100%" src="https://www.youtube.com/embed/WknSBlAIgdY" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-                            <div class="swiper-slide" style="overflow: hidden;"><iframe width="100%" height="100%" src="https://www.youtube.com/embed/gEejeo0MhX0" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-                            <div class="swiper-slide" style="overflow: hidden;"><iframe width="100%" height="100%" src="https://www.youtube.com/embed/O_QVwpBe2IM" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-                            <div class="swiper-slide" style="overflow: hidden;"><iframe width="100%" height="100%" src="https://www.youtube.com/embed/UWsStmXtYM0" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-                            <div class="swiper-slide" style="overflow: hidden;"><iframe width="100%" height="100%" src="https://www.youtube.com/embed/Hpe-IqdQceE" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-                            <div class="swiper-slide" style="overflow: hidden;"><iframe width="100%" height="100%" src="https://www.youtube.com/embed/Bz8PoEdtbds" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-                            <div class="swiper-slide" style="overflow: hidden;"><iframe width="100%" height="100%" src="https://www.youtube.com/embed/v1R8XWFYuvQ" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-                            <div class="swiper-slide" style="overflow: hidden;"><iframe width="100%" height="100%" src="https://www.youtube.com/embed/R3Nns8UE8nk" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-                            <div class="swiper-slide" style="overflow: hidden;"><iframe width="100%" height="100%" src="https://www.youtube.com/embed/9vDNxekUIeg" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+                            <div class="swiper-slide" style="overflow: hidden;">
+                                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/tKZQuO1sN3Y"></iframe>
+                            </div>
+                            <div class="swiper-slide" style="overflow: hidden;">
+                                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/WknSBlAIgdY"></iframe>
+                            </div>
+                            <div class="swiper-slide" style="overflow: hidden;">
+                                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/gEejeo0MhX0" ></iframe>
+                            </div>
+                            <div class="swiper-slide" style="overflow: hidden;">
+                                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/O_QVwpBe2IM" ></iframe>
+                            </div>
+                            <div class="swiper-slide" style="overflow: hidden;">
+                                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/UWsStmXtYM0"></iframe>
+                            </div>
                         </div>
                         <div class="swiper-pagination"></div>
                     </div>
@@ -181,4 +184,6 @@
             </main>
         </div>
     </div>
+    
+    
 </t:wrapper>

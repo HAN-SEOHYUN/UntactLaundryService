@@ -8,11 +8,10 @@
 <head>
 <meta charset="UTF-8">
 <title>런드리고 관리자 페이지</title>
-<script src="<c:url value="/js/jquery-3.6.0.min.js"/>"
-	type="text/javascript" text="javascript"></script>
+<%-- <script src="<c:url value='/js/admin/adminLogin.js'/>" type="text/javascript"></script> --%>
+<script src="<c:url value="/js/jquery-3.6.0.min.js"/>" type="text/javascript" text="javascript"></script>
 <script type="text/javascript">
-$(window, document, undefined).ready(function() {
-	
+$(function(){
 	$('#loginBtn').click(function(){
 		$('form[name=loginFrm]').submit();
 	});
@@ -49,7 +48,7 @@ $(window, document, undefined).ready(function() {
 	  	$(this).removeClass('is-active');
 	  });
 
-	});
+});
 </script>
 <style type="text/css">
 * {
@@ -179,8 +178,7 @@ input:focus ~ .highlight {
 }
 
 /* Animations */
-@
-keyframes inputHighlighter {from { background:#4a89dc;
+@keyframes inputHighlighter {from { background:#4a89dc;
 	
 }
 
@@ -255,31 +253,20 @@ to {
 }
 
 /* Ripples animation */
-@
-keyframes ripples { 0% {
+@keyframes ripples { 0% {
 	opacity: 0;
 }
 
-25
-%
-{
-opacity
-:
-1;
+25% {
+	opacity:1;
 }
-100
-%
-{
-width
-:
-200%;
-padding-bottom
-:
-200%;
-opacity
-:
-0;
+
+100% {
+	width:200%;
+	padding-bottom:200%;
+	opacity:0;
 }
+
 }
 footer {
 	text-align: center;
@@ -342,11 +329,11 @@ footer img:focus, footer a:focus {
 			</button>
 		</form>
 		<footer>
-			<a href="http://www.polymer-project.org/" target="_blank">
+			<a href="<c:url value='/'/>">
 				<img src="<c:url value="/images/logo_4.svg"/>"></a>
 			<p>
 				관리자 아이디 비밀번호 분실시, 본사로 연락 바랍니다. <a href="#"
-					target="_blank">02-123-4567</a>
+					target="_blank">02-3000-3000</a>
 			</p>
 		</footer>
 	</div>

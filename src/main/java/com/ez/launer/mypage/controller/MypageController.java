@@ -1,5 +1,10 @@
 package com.ez.launer.mypage.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,6 +25,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ez.launer.common.ConstUtil;
 import com.ez.launer.common.PaginationInfo;
@@ -84,7 +90,7 @@ public class MypageController {
 		logger.info("페이징, searchVo={}", searchVo);
 		
 		PaginationInfo pagingInfo = new PaginationInfo();
-		pagingInfo.setBlockSize(ConstUtil.BLOCKSIZE);
+		pagingInfo.setBlockSize(5);
 		pagingInfo.setRecordCountPerPage(searchVo.getCountPerPage());
 		pagingInfo.setCurrentPage(searchVo.getCurrentPage());
 		searchVo.setRecordCountPerPage(searchVo.getCountPerPage());
@@ -201,18 +207,18 @@ public class MypageController {
 		logger.info("회원정보 수정 - 비밀번호 확인 결과, result ={}", result);
 
 		if(result==UserService.LOGIN_OK) {
-			int cnt = userService.updateUserHp(vo);
-			logger.info("회원정보 수정 결과, cnt ={}", cnt);
-			int cnt2 = userService.updateUserAddress(vo);
-			logger.info("회원정보 수정 결과, cnt2={} ", cnt2);
 
 			if(resCnt > 0) {
+				int cnt = userService.updateUserHp(vo);
+				logger.info("회원정보 수정 결과, cnt ={}", cnt);
+				int cnt2 = userService.updateUserAddress(vo);
+				logger.info("회원정보 수정 결과, cnt2={} ", cnt2);
 				if(cnt>0 && cnt2>0) { 
 					msg="회원정보를 수정하였습니다."; 
 				}else { msg="회원정보 수정 실패"; }
 			}else {
 				msg = "서비스 미지원 지역입니다.";
-				url="/";
+				url="/mypage/useredit";
 			}
 		}else if(result==UserService.DISAGREE_PWD) {
 			msg="비밀번호가 일치하지 않습니다.";			
@@ -224,13 +230,15 @@ public class MypageController {
 		return "/common/message";
 
 	}
+	
+	
 	@PostMapping("/usereditSocial")
 	public String editKakao_post(@ModelAttribute UserAllVO vo,
 			HttpSession session, Model model) {
 		int no=(int)session.getAttribute("no");
 
 		vo.setNo(no);
-		logger.info("카카오회원정보 수정, UserAllVO={}", vo);
+		logger.info("카카오회원정보 수정 파라미터, UserAllVO={}", vo);
 
 		String hp=vo.getHp();
 		
@@ -264,22 +272,26 @@ public class MypageController {
 				vo.setOfficeNo(officeVo.getNo());
 				resCnt++;
 				break;
+			}else {
+				vo.setOfficeNo(vo.getOfficeNo());
 			}
 		} 
 		
 		String msg="", url="/mypage/useredit";
 		
 		if(resCnt > 0) {
-			int cnt = userService.updateUserAddress(vo);
+			int cnt = userService.updateUserHp(vo);
 			logger.info("카카오회원정보 수정 결과, cnt ={},vo={}", cnt,vo);
+			int cnt2 = userService.updateUserAddress(vo);
+			logger.info("카카오회원정보 수정 결과, cnt2={} ", cnt2);
 
 
-			if(cnt>0 ) { 
+			if(cnt>0 && cnt2>0 ) { 
 				msg="회원정보를 수정하였습니다.";
 			}else { msg="회원정보 수정 실패"; }
 		}else {
 			msg = "서비스 미지원 지역입니다.";
-			url="/";
+			url="/mypage/useredit";
 		}
 		
 
@@ -384,9 +396,7 @@ public class MypageController {
 				   ck.setPath("/"); 
 				   ck.setMaxAge(0);
 				  response.addCookie(ck);
-				  session.removeAttribute("no");
-				  session.removeAttribute("name");
-				  session.removeAttribute("email");
+				  session.invalidate();
 				 
 			}else {
 				msg="회원탈퇴 실패";				
@@ -403,50 +413,58 @@ public class MypageController {
 		return "/common/message";
 	}
 	@PostMapping("/withdrawSocial")
-	public String userdeleteSocial_post(
+	public String userdeleteSocial_post(@RequestParam String socialLoginHost,
 			HttpSession session, HttpServletResponse response,
 			Model model) {
 		int no=(int)session.getAttribute("no");
-		
-		String msg="",url="";
-		int cnt =0;
-		
-		//카카오 회원탈퇴
+		logger.info("소셜계정 회원탈퇴, socialLoginHost={}", socialLoginHost);
+
 		String access_Token = (String)session.getAttribute("access_Token");
 		logger.info("access_Token={}",access_Token);
-		
-		if(access_Token!=null) {
-			
-			cnt = userService.deleteUser(no);
-			kakaoApi.unlink(access_Token);
-			logger.info("카카오 회원탈퇴완료");
-			msg ="회원탈퇴 처리가 되었습니다.";
-			url ="/mypage/signout";
-			
-			session.removeAttribute("no");
-			session.removeAttribute("access_Token");
-			session.removeAttribute("email");
-		}else {
-			String email=(String)session.getAttribute("email");
-			logger.info("회원 탈퇴 처리, 파라미터 no={}",no);
+
+		String msg="",url="";
+		int cnt =0;
+
+		if(socialLoginHost.equals("KAKAO")) {		//카카오일 경우
+			if(access_Token!=null) {
+				cnt = userService.deleteUser(no);
+				kakaoApi.unlink(access_Token);
+				logger.info("카카오 회원탈퇴완료");
+				msg ="회원탈퇴 처리가 되었습니다.";
+				url ="/mypage/signout";
+
+				session.invalidate();
+			}else {
+				String email=(String)session.getAttribute("email");
+				logger.info("회원 탈퇴 처리, 파라미터 no={}",no);
 
 				cnt=userService.deleteUser(no);
 				if(cnt>0) {
 					msg="회원탈퇴 처리가 되었습니다.";
 					url="/mypage/signout";
-					
+
 					Cookie ck = new Cookie("chkUseremail", email);
-					ck.setPath("/"); 
+					ck.setPath("/");
 					ck.setMaxAge(0);
 					response.addCookie(ck);
-					session.removeAttribute("no");
-					session.removeAttribute("name");
-					session.removeAttribute("email");
-					
+					session.invalidate();
+
 				}else {
-					msg="회원탈퇴 실패";				
+					msg="회원탈퇴 실패";
 				}
+			}
+		}else if(socialLoginHost.equals("NAVER")) {
+			naverOut(access_Token);
+
+			cnt = userService.deleteUser(no);
+			naverOut(access_Token);
+			logger.info("네이버 회원탈퇴완료");
+			msg ="회원탈퇴 처리가 되었습니다.";
+			url ="/mypage/signout";
+
+			session.invalidate();
 		}
+
 		model.addAttribute("msg", msg);
 		model.addAttribute("url", url);
 		
@@ -476,7 +494,7 @@ public class MypageController {
 		}
 		
 		PaginationInfo pagingInfo = new PaginationInfo();
-		pagingInfo.setBlockSize(ConstUtil.BLOCKSIZE);
+		pagingInfo.setBlockSize(5);
 		pagingInfo.setRecordCountPerPage(searchVo.getCountPerPage());
 		pagingInfo.setCurrentPage(searchVo.getCurrentPage());
 		searchVo.setRecordCountPerPage(searchVo.getCountPerPage());
@@ -541,10 +559,69 @@ public class MypageController {
 		
 		
 		
-		
 	}
 	@GetMapping("/signout")
 	public void singOut() {
 		logger.info("탈퇴 완료 페이지 화면");
+	}
+	
+	
+	
+	@GetMapping("/chkAddress")
+	@ResponseBody
+	public Map<String, Object> chkAddress(@RequestParam String address) {
+		logger.info("ajax 주소 확인 address={}", address);
+		
+		String area = address.split("\\s")[1];
+		
+		List<OfficeVO> list= userService.selectOffice();
+		
+		boolean res = false;
+		for(OfficeVO officeVo : list) {
+			String dbOffice = officeVo.getAddress().split("\\s")[1];
+			if(dbOffice.equals(area)) {
+				res=true;
+				break;
+			}
+		} 
+		Map<String, Object> map = new HashMap<>();
+		map.put("SUCCESS", res);
+		
+		return map;
+	}
+
+
+
+
+
+
+
+
+	//인생은 운빨~
+	//인생은 운빨~
+	//인생은 운빨~
+	public void naverOut(String access_Token) {
+		String reqURL = "https://nid.naver.com/oauth2.0/token?grant_type=delete&client_id=sA1wXjzUVJ_q15yX5Z3k" +
+				"&client_secret=LzHF30VRtz&access_token=" + access_Token + "&service_provider=NAVER";
+		try {
+			URL url = new URL(reqURL);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("POST");
+
+			int responseCode = conn.getResponseCode();
+			System.out.println("responseCode : " + responseCode);
+
+			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+			String result = "";
+			String line = "";
+
+			while ((line = br.readLine()) != null) {
+				result += line;
+			}
+			System.out.println(result);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

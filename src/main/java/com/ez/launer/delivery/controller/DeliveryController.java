@@ -175,7 +175,7 @@ public class DeliveryController {
 
 		// deliveryNo로 배달기사 정보 전체 조회
 		DeliveryDriverVO deliveryVO = deliveryDriverService.selectByNo(deliveryNo);
-//        logger.info("배달기사 정보조회 결과 deliveryVo={}", deliveryVO);
+        logger.info("배달기사 정보조회 결과 deliveryVo={}", deliveryVO);
 
 //        OfficeVO officeVO = officeService.selectByNo(deliveryVO.getOfficeNo());
 //        logger.info("지점정보 조회 officeVO={}", officeVO);
@@ -194,7 +194,7 @@ public class DeliveryController {
 		 * orderListSearchVO.setListType("PICKUP_DRIVER");
 		 */
 
-//        logger.info("중간 테스트 orderListSearchVO={}", orderListSearchVO);
+        logger.info("중간 테스트 orderListSearchVO={}", orderListSearchVO);
 
 		/*
 		 * Map<String, Object> setMap = new HashMap<>(); setMap.put("no",
@@ -437,6 +437,8 @@ public class DeliveryController {
 	public String editDelivery_get(HttpSession session, Model model) {
 
 		int deliveryNo = (int) session.getAttribute("deliveryNo");
+		
+		
 		logger.info("배송기사 정보 수정 화면, 파라미터 deliveryNo={}", deliveryNo);
 
 		HashMap<String, Object> map = deliveryDriverService.selectByEdit(deliveryNo);
@@ -460,14 +462,6 @@ public class DeliveryController {
 		int office=vo.getOfficeNo();
 		
 		vo.setOfficeNo(office);
-		/*
-		 * String hp=vo.getHp(); int officeNo=vo.getOfficeNo(); String
-		 * bank=vo.getBank(); String accountHolder=vo.getAccountHolder(); int
-		 * accountNumber=vo.getAccountNumber();
-		 * 
-		 * vo.setHp(hp); vo.setOfficeNo(officeNo); vo.setBank(bank);
-		 * vo.setAccountHolder(accountHolder); vo.setAccountNumber(accountNumber);
-		 */
 
 		String msg = "비밀번호 확인 실패", url = "/delivery/useredit";
 		String pwd = sha256.encrypt(vo.getPwd());
@@ -536,9 +530,7 @@ public class DeliveryController {
 				ck.setPath("/");
 				ck.setMaxAge(0);
 				response.addCookie(ck);
-				session.removeAttribute("deliveryNo");
-				session.removeAttribute("name");
-				session.removeAttribute("email");
+				session.invalidate();
 
 			} else {
 				msg = "회원탈퇴 실패";
@@ -573,7 +565,8 @@ public class DeliveryController {
 		vo.setNo(deliveryNo);
 		logger.info("비밀번호 변경, vo={} ,파라미터 newPwd={}", vo, newPwd);
 
-		/* String pwd = sha256.encrypt(vo.getPwd()); vo.setPwd(pwd); */
+		String pwd = sha256.encrypt(vo.getPwd()); 
+		vo.setPwd(pwd);
 
 		int result = deliveryDriverService.checkLogin(vo.getNo(), vo.getPwd());
 		logger.info("비밀번호 변경 처리, 비밀번호 조회 결과 result={}", result);
@@ -601,4 +594,18 @@ public class DeliveryController {
 
 	}
 
+
+
+
+	@RequestMapping("/logout")
+	public String logout(HttpSession session) {
+		logger.info("배송기사 로그아웃");
+
+		session.removeAttribute("dmail");
+		session.removeAttribute("name");
+		session.removeAttribute("deliveryNo");
+		session.removeAttribute("classNo");
+
+		return "/user/login";
+	}
 }

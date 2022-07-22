@@ -1,61 +1,34 @@
 $(function(){
+	//유효성
 	$('form[name=joinfrm]').submit(function(){
 		if($.trim($('#name').val()) == ""){
 			alert("이름을 입력해 주세요.");
 			$('#name').focus();
 			event.preventDefault();
 		}else if(!validate_email($("#email").val())) {
-			alert("이메일 형식에 맞게 입력해 주세요");
+			alert("이메일 형식에 맞게 입력해 주세요.");
 			$("#email").focus();
 			event.preventDefault();
-		}else if(classNo === 1) {
-			if($('#chkEmail').val()!='Y'){
-				alert("이메일 중복확인해야 합니다");
-				$("#btnChkEmail").focus();
-				event.preventDefault();
-			}
-		}else if(classNo === 2) {
-			if($('#chkDmail').val()!='Y'){
-				alert("이메일 중복확인해야 합니다");
-				$("#btnChkDmail").focus();
-				event.preventDefault();
-			}
 		}else if($("#pwd").val().length<1) {
-			alert("비밀번호를 입력하세요");
+			alert("비밀번호를 입력하세요.");
 			$("#pwd").focus();
 			event.preventDefault();
 		}else if(!validate_pwd($("#pwd").val())) {
-			alert("8자 이상의 문자와 특수문자를 포함한 비밀번호가 필요합니다");
+			alert("8~16자의 숫자와 문자, 특수문자를 포함한 비밀번호가 필요합니다.");
 			$("#pwd").focus();
 			event.preventDefault();
 		}else if($("#pwd").val()!=$("#pwd2").val()) {
 			alert("비밀번호가 일치하지 않습니다.");
 			$("#pwd2").focus();
 			event.preventDefault();
-		}else if(classNo === 1) {
-			if($("#addressDetail").val().length<1) {
-				alert("상세주소를 입력하세요");
-				$("#addressDetail").focus();
-				event.preventDefault();
-			}
-		}else if(!validate_hp($('#hp').val())){
-			alert("전화번호는 숫자만 가능합니다");
+		}else if($("#hp").val().length<1){
+			alert("휴대전화번호를 입력하시고 중복확인/인증하셔야합니다.");
 			$("#hp").focus();
 			event.preventDefault();
-		}else if(classNo === 2) {
-			if($("#accHolder").val().length<1) {
-				alert("계좌주 성명을 입력하세요");
-				$("#accHolder").focus();
-				event.preventDefault();
-			}else if($("#accNum").val().length<1) {
-				alert("계좌번호를 입력하세요");
-				$("#accNum").focus();
-				event.preventDefault();
-			}else if(!validate_accNum($("#accNum").val())) {
-				alert("계좌번호는 숫자만 입력 가능합니다");
-				$("#accNum").focus();
-				event.preventDefault();
-			}
+		}else if(!validate_hp($('#hp').val())){
+			alert("전화번호양식에 맞게 입력하세요.");
+			$("#hp").focus();
+			event.preventDefault();
 		}else if(!$('#agreechk').is(':checked')){
 			alert('약관에 동의해야 회원가입을 진행할 수 있습니다.');
 			$('#agreechk').focus();
@@ -68,22 +41,131 @@ $(function(){
 			alert('개인정보 제공에 동의해야 회원가입을 진행할 수 있습니다.');
 			$('#privacychk2').focus();
 			event.preventDefault();
+		}else if(classNo === 1) {
+			if($('#chkEmail').val()!='Y'){
+				alert("이메일 중복확인해야 합니다.");
+				$("#btnChkEmail").focus();
+				event.preventDefault();
+			}else if($('#chkHp').val()!='Y'){
+				alert("휴대전화 중복확인/인증이 필요합니다.");
+				$("#btnChkHp").focus();
+				event.preventDefault();
+			}else if($("#addressDetail").val().length<1) {
+				alert("상세주소를 입력하세요.");
+				$("#addressDetail").focus();
+				event.preventDefault();
+			}
+		}else if(classNo === 2) {
+			if($('#chkDmail').val()!='Y'){
+				alert("이메일 중복확인해야 합니다.");
+				$("#btnChkDmail").focus();
+				event.preventDefault();
+			}else if($('#chkDhp').val()!='Y'){
+				alert("휴대전화 중복확인/인증이 필요합니다.");
+				$("#btnChkDhp").focus();
+				event.preventDefault();
+			}else if($("#officeNo").val().length<1) {
+				alert("지점이 선택되지 않았습니다 지점선택 버튼을 클릭하시고 선호지점을 선택하시기 바랍니다.");
+				$("#officeNo").focus();
+				event.preventDefault();
+			}else if($("#accHolder").val().length<1) {
+				alert("계좌주 성명을 입력하세요.");
+				$("#accHolder").focus();
+				event.preventDefault();
+			}else if($("#accNum").val().length<1) {
+				alert("계좌번호를 입력하세요.");
+				$("#accNum").focus();
+				event.preventDefault();
+			}else if(!validate_accNum($("#accNum").val())) {
+				alert("계좌번호는 숫자만 입력 가능합니다.");
+				$("#accNum").focus();
+				event.preventDefault();
+			}
 		}
 	});
-
+	//에러메시지
+	$('form[name=joinfrm] #email').keyup(function(){
+		if(!validate_email($('#email').val())){
+			$('.error_message_box').eq(0).text("이메일 형식에 맞게 입력해 주세요").css("color","red");
+		}else{
+			$('.error_message_box').eq(0).text("")
+		}
+	})
+	$('form[name=joinfrm] #pwd').keyup(function(){
+		if(!validate_pwd($('#pwd').val())){
+			$('.error_message_box').eq(1).text("8~16자의 숫자와 문자, 특수문자를 포함한 비밀번호가 필요합니다").css("color","red");
+		}else{
+			$('.error_message_box').eq(1).text("")
+		}
+	})
+	$('form[name=joinfrm] #pwd2').keyup(function(){
+		if($("#pwd").val()!=$("#pwd2").val()){
+			$('.error_message_box').eq(2).text("비밀번호가 일치하지 않습니다").css("color","red");
+		}else{
+			$('.error_message_box').eq(2).text("")
+		}
+	})
+	$('form[name=joinfrm] #addressDetail').keyup(function(){
+		if(classNo === 1) {
+			if($('#addressDetail').val()==""){
+				$('.error_message_box').eq(4).text("상세주소는 수거/배송시 필수 정보입니다").css("color","red");
+			}else{
+				$('.error_message_box').eq(4).text("")
+			}
+		}
+	})
+	$('form[name=joinfrm] #officeName').keyup(function(){
+		if(classNo === 2) {
+			if($('#officeName').val()==""){
+					$('.error_message_box').eq(3).text("지점이 선택되지 않았습니다 버튼 다시 클릭하시고 선호지점을 선택하세요").css("color","red");
+			}else{
+				$('.error_message_box').eq(3).text("")
+			}
+		}
+	})
+	$('form[name=joinfrm] #accNum').keyup(function(){
+		if(classNo === 2) {
+			if(!validate_accNum($("#accNum").val())){
+				$('.error_message_box').eq(4).text("계좌번호는 숫자만 입력 가능합니다").css("color","red");
+			}else{
+				$('.error_message_box').eq(4).text("")
+			}
+		}
+	})
+	$('form[name=joinfrm] #hp').keyup(function(){
+		if(!validate_hp($("#hp").val())){
+				$('.error_message_box').eq(5).text("전화번호양식에 맞게 입력하세요").css("color","red");
+		}else if(classNo === 1) {
+			if($("#chkHp").val()==""){
+				$('.error_message_box').eq(5).text("휴대전화 중복확인/인증이 필요합니다").css("color","red");
+			}else{
+				$('.error_message_box').eq(5).text("")
+			}
+		}else if(classNo === 2) {
+			if($("#chkDhp").val()==""){
+				$('.error_message_box').eq(5).text("휴대전화 중복확인/인증이 필요합니다").css("color","red");
+			}else{
+				$('.error_message_box').eq(5).text("")
+			}
+		}else{
+			$('.error_message_box').eq(5).text("")
+		}
+	})
+	
+	//중복버튼 클릭시
 	$('#btnChkEmail').click(function(){
 		var ctxPath="/launer";
 		var email=$('#email').val();
 
 		window.open(ctxPath+"/user/checkEmail?email="+email,"emailcheck",
-			"width=400,height=350,location=yes,resizable=yes,top=100,left=50");
+			"width=450,height=250,location=yes,resizable=yes,top=100,left=50");
 	});
 	$('#btnChkDmail').click(function(){
 		var ctxPath="/launer";
 		var email=$('#email').val();
 
 		window.open(ctxPath+"/delivery/checkDmail?email="+email,"Dmailcheck",
-			"width=400,height=350,location=yes,resizable=yes,top=100,left=50");
+			"width=450,height=250,location=yes,resizable=yes,top=100,left=50");
 	});
 
 	$('#btnChkHp').click(function(){
@@ -91,16 +173,16 @@ $(function(){
 		var hp=$('#hp').val();
 
 		window.open(ctxPath+"/user/checkHp?hp="+hp,"Hpcheck",
-			"width=400,height=350,location=yes,resizable=yes,top=100,left=50");
+			"width=400,height=250,location=yes,resizable=yes,top=100,left=50");
 	});
 	$('#btnChkDhp').click(function(){
 		var ctxPath="/launer";
 		var hp=$('#hp').val();
 
 		window.open(ctxPath+"/delivery/checkDhp?hp="+hp,"Dhpcheck",
-			"width=400,height=350,location=yes,resizable=yes,top=100,left=50");
+			"width=400,height=250,location=yes,resizable=yes,top=100,left=50");
 	});
-
+	//약관
 	$('input[name="agreeAllchk"]').click(function() {
 		$("input[type=checkbox]").prop("checked", this.checked);
 	});
@@ -122,17 +204,39 @@ function execZipcode() {
 			document.getElementById("address").value = addr;
 			document.getElementById("addressDetail").focus();
 			
+			chkAddress(addr);
 			coorSet(addr);
 		}
 	}).open();
 }
+const chkAddress = (address) => {
+	$.ajax({
+		url:"/launer/user/chkAddress",
+		type:"get",
+		data:`address=${address}`,
+		success:function(res){
+			var msg="";
+			console.log(res);
+			if(res.SUCCESS){  
+				msg="서비스 지원 지역입니다.";
+				$('#serviceError').html(msg).css("color","#01DF01");
+			}else{ 						
+				msg="서비스 미지원 지역입니다.";
+				$('#serviceError').html(msg).css("color","red");
+			}
+		},
+		error:function(xhr, status, error){
+			alert('error! : '  +error);
+		}
+	});
+};
 
 function validate_email(email){
 	var pattern = new RegExp(/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i);
 	return pattern.test(email);
 }
 function validate_pwd(pwd){
-	var pattern = new RegExp(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@!%*#?&])[A-Za-z\d@!%*#?&]{8,}$/);
+	var pattern = new RegExp(/^.*(?=^.{8,16}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/);
 	return pattern.test(pwd);
 }
 function validate_accNum(accNum){
@@ -157,6 +261,52 @@ function coorSet(addr) {
      if (status === kakao.maps.services.Status.OK) {
 	    document.querySelector("input[name=lonX]").value = result[0].y;
 	    document.querySelector("input[name=latY]").value = result[0].x;
-    }
+	 }
+    });
+};
+//배달기사 지점선택 모달
+$(function () {
+    $("#officeBtn").click(function () {
+        $('form[name=joinfrm] #modal-wrap').fadeIn(500);
+        $('form[name=joinfrm] #modal-wrap').css("display", "flex").animate({
+            opacity: 1
+        }, 300);
+    });
+
+    $(document).ready(function () {
+        $(".officelist li").click(function () {
+            $(".officelist li").removeClass("on");
+            $(this).addClass("on");
+
+
+        });
+    });
+
+
+    $("#confirmBtn").click(function () {
+        modalClose();
+    });
+
+    $(".officelist li a").click(function (e) {
+        e.preventDefault();
+        document.getElementById('officeNo').value = this.dataset.value;
+		document.getElementById('officeName').value=$(this).text();
+        modalClose();
+    })
+
+    function modalClose() {
+        $('form[name=joinfrm] #modal-wrap').fadeOut();
+        $('form[name=joinfrm] #modal-wrap').animate({
+            opacity: 0
+        }, 300, function () {
+            $('form[name=joinfrm] #modal-wrap').css("display", "none");
+        });
+        if($('#officeName').val()==""){
+				$('.error_message_box').eq(3).text("지점이 선택되지 않았습니다 버튼 다시 클릭하시고 선호지점을 선택하세요").css("color","red");
+		}else{
+			$('.error_message_box').eq(3).text("")
+		}
+    };
+
 });
-} 
+	

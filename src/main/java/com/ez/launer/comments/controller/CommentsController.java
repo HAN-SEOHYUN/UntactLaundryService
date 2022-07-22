@@ -59,21 +59,21 @@ public class CommentsController {
 	}*/
 	@PostMapping("/comments")
 	@ResponseBody
-	public String commentsInsert(@RequestBody CommentsVO commentsVO) {
+	public boolean commentsInsert(@RequestBody CommentsVO commentsVO) {
 		logger.info("댓글 등록 commentsVO={}", commentsVO);
 
-		//int step = commentsService.selectStep(boardNo);
+		int step = commentsVO.getStep();
+		int cnt = 0;
 
-		/*CommentsVO commentsVo = new CommentsVO();
-		commentsVo.setStep(step);
-		commentsVo.setBoardNo(boardNo);
-		commentsVo.setUsersNo(usersNo);
-		commentsVo.setGroupNo(groupNo);
-		commentsVo.setContent(content);
+		if(step == 0) {
+			cnt = commentsService.insertComments(commentsVO);
+		} else {
+			cnt = commentsService.insertReply(commentsVO);
+		}
 
-		int cnt = commentsService.insertComments(commentsVo);*/
+		logger.info("댓글 등록 결과 cnt={}", cnt);
 
-		return "test";
+		return cnt > 0;
 	}
 	
 	@DeleteMapping("/comments/{commentsNo}")

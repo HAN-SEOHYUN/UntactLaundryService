@@ -49,19 +49,20 @@ public class AdminManageController {
 	private final DeliveryDriverService deliveryService;
 	private final OfficeService officeService;
 	private final SHA256Encryption sha256;
+	
 
 	@RequestMapping("/stores")
 	public String stores(Model model) {
 		
 		//지점 전체 조회
-		List<OfficeVO> officeList = officeService.selectAll();
-		logger.info("지점조회 officeList.size={}", officeList.size());
+		//List<OfficeVO> officeList = officeService.selectAll();
+		//logger.info("지점조회 officeList.size={}", officeList.size());
 		
-		//지점관리자 list vo
-		List<Map<String, Object>> managerList = officeService.selectAllManager();
-		logger.info("지점 관리자 조회결과 managerList.size={}",managerList.size());
+		//지점정보 조회 list
+		List<Map<String, Object>> selectOfficeInfo = officeService.selectOfficeInfo();
+		logger.info("지점 정보 조회결과 selectOfficeInfo.size={}",selectOfficeInfo.size());
 		
-		model.addAttribute("officeList",officeList);
+		model.addAttribute("selectOfficeInfo",selectOfficeInfo);
 
 		return "/admin/stores";
 	}
@@ -100,11 +101,16 @@ public class AdminManageController {
 			tabNo =3;
 		}
 		logger.info("tabNo={}",tabNo);
+		
+		//지점 select option 생성
+		List<OfficeVO> officeList = officeService.selectAll();
+		logger.info("전체 조회결과 officeList.size={}",officeList.size());
 
 		model.addAttribute("userSearchKeyword",userSearchKeyword);
 		model.addAttribute("userSearchCondition",userSearchCondition);
 		model.addAttribute("driverSearchCondition",driverSearchCondition);
 		model.addAttribute("driverSearchKeyword",driverSearchKeyword);
+		model.addAttribute("officeList",officeList);	
 		model.addAttribute("tabNo",tabNo);
 		return"/admin/users";
 	}
@@ -217,20 +223,34 @@ public class AdminManageController {
 	}
 
 	@DeleteMapping("/user/{no}")
-	public String deleteAdmin(@PathVariable("no") int no) {
+	@ResponseBody
+	public Map<String, Object> deleteAdmin(@PathVariable("no") int no) {
 		System.out.println("no "+no);
 		int result = userService.deleteUser(no);
 		officeService.deleteOfficeAdmin(no);
 		System.out.println("result "+result);
-		return "redirect:/admin/users";
+
+		Map<String, Object> resMap = new HashMap<>();
+		resMap.put("SUCCESS", false);
+		if(result > 0) resMap.put("SUCCESS", true);
+
+//		return "redirect:/admin/users";
+		return resMap;
 	}
 	
 	@DeleteMapping("/delivery-user/{no}")
-	public String deleteDelivery(@PathVariable("no") int no) {
+	@ResponseBody
+	public Map<String, Object> deleteDelivery(@PathVariable("no") int no) {
 		System.out.println("no "+no);
 		int result = deliveryService.deleteDelivery(no);
 		System.out.println("result "+result);
-		return "redirect:/admin/users";
+
+		Map<String, Object> resMap = new HashMap<>();
+		resMap.put("SUCCESS", false);
+		if(result > 0) resMap.put("SUCCESS", true);
+
+//		return "redirect:/admin/users";
+		return resMap;
 	}
 	
 	
@@ -243,5 +263,50 @@ public class AdminManageController {
 		
 		return withdrawList;
 	}
+	
+	@DeleteMapping("/stores/{no}")
+	@ResponseBody
+	public Map<String, Object> deleteOffice(@PathVariable("no") int no) {
+		System.out.println("no "+no);
+		int result = officeService.deleteOffice(no);
+		System.out.println("result "+result);
 
+		Map<String, Object> resMap = new HashMap<>();
+		resMap.put("SUCCESS", false);
+		if(result > 0) resMap.put("SUCCESS", true);
+
+		return resMap;
+	}
+	
+    
+    @RequestMapping("/storesDetail")
+    public String storesDetail() {
+        logger.info("storesDetail 페이지");
+        
+        return "/admin/storesDetail";
+    }
+    
+    
+	@PostMapping("/insertOffice")
+	public String insertOffice(@ModelAttribute OfficeVO officeVo, Model model) {
+    	logger.info("지점 등록 officeVo={}", officeVo);
+    	
+    	int cnt = officeService.insertOffice(officeVo);
+    	
+    	String msg = "지점 등록 실패", url="/admin/stores";
+    	
+    	if(cnt>0) {
+    		msg ="지점 등록 성공";
+    	}
+    	
+    	logger.info("cnt={}",cnt);
+    	
+    	model.addAttribute("url",url);
+    	model.addAttribute("msg",msg);
+ 
+	 return "/common/message";
+	 
+	} 
+
+    
 }

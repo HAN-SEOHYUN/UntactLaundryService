@@ -5,8 +5,6 @@
 	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 	<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 	<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-	<link rel="stylesheet" href="<c:url value="/css/user/findIdPwd.css"/>"/>
-
 <div id="findIdPwd_wrap">
 	<div class="findIdPwdsubWrap">
 		<div class="titleArea">
@@ -18,7 +16,7 @@
 		</div>
 		<form name="findPwdfrm" method="post" 
 			action="<c:url value='/user/findPwd'/>">
-				<div class="findIdPwdsubWrap">
+				<div class="findIdPwdfrm_Wrap">
 					<div id="findIdPwdbox">
 			            <p class="memberType"><strong>회원유형</strong>
 			            	<select id="searchType" name="searchType">
@@ -31,13 +29,13 @@
 						</p>
 						<p id="mobile_view"><strong>휴대폰 번호</strong> 
 							<input type="text" name="hp" id="hp" maxlength="11" 
-								placeholder="-를 제외하고 입력해주세요">
+								placeholder="-를 제외하고 입력해주세요" autocomplete="off">
 						</p>
 						<p id="email_view" style=""><strong id="email_lable">이메일 주소</strong>
-							<input id="email" name="email" type="text">
+							<input id="email" name="email" type="text" autocomplete="off">
 						</p>
 						<div class="findIdPwdBtnWrap">
-                			<button class="findIdPwdBtn">확인</button>
+                			<button class="findIdPwdBtn" id="findPwdBtn">확인</button>
             			</div>
 					</div>
 				</div>

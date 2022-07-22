@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.ez.launer.board.controller.BoardAPIController;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,10 +27,9 @@ public class CommentsServiceImpl implements CommentsService {
 
 	@Override
 	public int insertComments(CommentsVO commentsVo) {
-		/*int boardNo = commentsVo.getBoardNo();
-		int step = selectStep(boardNo);
-		commentsVo.setStep(step+1);
-		*/
+		//groupNo가 0인 댓글은, 부모댓글이 없는 최상위 댓글입니다. (step도 1)
+		commentsVo.setStep(1);
+		
 		return commentsDao.insertComments(commentsVo);
 	}
 
@@ -47,6 +47,14 @@ public class CommentsServiceImpl implements CommentsService {
 	public int selectStep(int boardNo) {
 		CommentsVO vo = commentsDao.selectComment(boardNo);
 		return vo.getStep();
+	}
+
+	@Override
+	@Transactional
+	public int insertReply(CommentsVO commentsVo) {
+		// 부모 댓글의 step을 찾아서, +1 시킨값을 넣음 (프로시저 대신에 썼습니다.)
+		commentsDao.updateSortNo(commentsVo);
+		return commentsDao.reply(commentsVo);
 	}
 	
 }

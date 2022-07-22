@@ -23,84 +23,81 @@
 </script>
 <script src="<c:url value="/js/join.js"/>" type="text/javascript" text="javascript"></script>
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script type="text/javascript" src="<c:url value='/js/jquery-3.6.0.min.js'/>"></script>
 <div id="join_wrap">
 	<div class="join_form">
 		<form name="joinfrm" method="post"
 			action="" >
 			<fieldset>
-			<!-- 배달기사 로그인은 제목 다르게 -->
+			<!-- 배달기사 가입은 제목 다르게 -->
 				<h3 align="center">${classNo == 1 ? "러너" : "배달기사"} 회원 가입</h3>
 				<div class="namebox">
 					<label for="name">회원 이름</label> 
-					<input type="text" name="name" id="name" style="ime-mode: active">
-					<input type="text" name="userCode" id="userCode" value="${classNo == 1 ? 1 : 2}" readonly>
+					<input type="text" name="name" id="name" maxlength="20" style="ime-mode: active">
+					<input type="hidden" name="userCode" id="userCode" value="${classNo == 1 ? 1 : 2}" readonly>
 				</div>
 				<div>
 					<label for="email">이메일</label>
-					<input type="text" name="email" id="email">
+					<input type="text" name="email" id="email" autocomplete="off">
 					<c:if test="${classNo == 1}">
 						<input type="button" value="중복 확인" id="btnChkEmail">
-						<input type="text" name="chkEmail" id="chkEmail" disabled>
+						<input type="hidden" name="chkEmail" id="chkEmail" disabled>
 					</c:if>
 					<c:if test="${classNo == 2}">
 						<input type="button" value="중복 확인" id="btnChkDmail">
-						<input type="text" name="chkDmail" id="chkDmail" disabled>
+						<input type="hidden" name="chkDmail" id="chkDmail" disabled>
 					</c:if>
+					<br><span class="error_message_box"></span>
 				</div>
 				<div>
 					<label for="pwd">비밀번호</label> 
 					<input type="Password" name="pwd" 
-						id="pwd" placeholder="8자 이상의 문자,특수문자 포함">
+						id="pwd" placeholder="8~16자의 숫자,문자,특수문자 포함">
+					<span class="error_message_box" style="margin-left : 0"></span>
 				</div>
 				<div>
 					<label for="pwd2">비밀번호 확인</label> 
 					<input type="Password" name="pwd2" id="pwd2">
+					<span class="error_message_box" style="margin-left : 0"></span>
 				</div>
 				<!-- 일반회원 가입시 주소 입력 폼-->
 				<c:if test="${classNo == 1}">
 					<div>
 						<label for="zipcode">우편번호</label>
-						<input type="text" name="zipcode" id="zipcode">&nbsp;
+						<input type="text" name="zipcode" id="zipcode" autocomplete="off">
 						<input type="Button" value="우편번호 찾기" id="btnZipcode" onclick="execZipcode()">
-						<input type="text" name="point" id="point" value= 5000 readonly><br />
+						<input type="hidden" name="point" id="point" value=999999 readonly><br>
 						<label for="adress">주소</label>
-						<input type="text" name="address" id="address">
-						<input type="text" name="officeNo" id="OfficeNo" value=0 readonly><br />
-						<label for="adressDetail">상세주소</label>
-						<input type="text" name="addressDetail" id="addressDetail"><br />
+						<input type="text" name="address" id="address" autocomplete="off">
+						<span class="error_message_box" id="serviceError" style="margin-left : 0"></span><br>
+						<label for="addressDetail">상세주소</label>
+						<input type="text" name="addressDetail" id="addressDetail" autocomplete="off">
+						<span class="error_message_box" style="margin-left : 0"></span><br>
 						<input type="hidden" name="lonX" value="${map['LON_X']}">
 		    			<input type="hidden" name="latY" value="${map['LAT_Y']}">
 						<label for="entermethod">공동현관 출입방법</label>
 						<input type="text" name="entermethod" id="entermethod"
 							placeholder="입력하지 않을시 '없음'으로 입력됩니다">
-						<input type="text" name="entermethod2" id="entermethod2" value="없음" readonly>
+						<input type="hidden" name="entermethod2" id="entermethod2" value="없음" readonly>
 					</div>
 				</c:if>
 				<!-- 배달기사 가입시 지점, 계좌 입력 폼-->
 				<c:if test="${classNo == 2}">
 					<div>
-						<label for="office">지점선택</label>
-						<select name="office" id="office">
-							<option value="강남지점">강남지점</option>
-							<option value="강동지점">강동지점</option>
-							<option value="강북지점">강북지점</option>
-							<option value="강서지점">강서지점</option>
-							<option value="관악지점">관악지점</option>
-							<option value="광진지점">광진지점</option>
-							<option value="노원지점">노원지점</option>
-							<option value="동대문지점">동대문지점</option>
-							<option value="서대문지점">서대문지점</option>
-							<option value="송파지점">송파지점</option>
-							<option value="양천지점">양천지점</option>
-							<option value="용산지점">용산지점</option>
-							<option value="종로지점">종로지점</option>
-							<option value="중랑지점">중랑지점</option>
-						</select>
-						<input type="text" name="officeNo" id="OfficeNo" value=0 readonly>
+						<label for="officeNo">지점선택</label>
+						<input type="button" value="지점 선택" name="officeBtn" id="officeBtn">
+						<input type="text" id="officeName" name="officeName" style="margin-left:5px">
+						<input type="hidden" id="officeNo" name="officeNo">
+						<span class="error_message_box" style="margin-left : 0"></span>
+						<!--  <select name="officeNo">
+							<c:forEach var="list" items="${list}">
+							<option value="${list.no}">${list.officeName}</option>
+							</c:forEach>
+						</select> -->
 					</div>
 					<div>
 						<label for="accHolder">계좌주</label>
-						<input type="text" name="accHolder" id="accHolder"><br />
+						<input type="text" name="accHolder" id="accHolder" maxlength="20" autocomplete="off"><br />
 						<label for="bank">은행-계좌번호</label>
 						<select name="bank" id="bank">
 							<option value="국민은행">국민은행</option>
@@ -116,21 +113,23 @@
 							<option value="SC제일은행">SC제일은행</option>
 						</select>
 						<input type="text" name="accNum" id="accNum" 
-							placeholder="-를 제외하고 입력해주세요" class="width_350">
+							placeholder="-를 제외하고 입력해주세요" class="width_350" autocomplete="off">
+						<br><span class="error_message_box"></span>
 					</div>
 				</c:if>
 				<div class="hpbox">
 					<label for="hp">휴대전화</label>
 					<input type="text" name="hp" id="hp" maxlength="11" 
-						placeholder="-를 제외하고 입력해주세요">&nbsp;
+						placeholder="-를 제외하고 입력해주세요" autocomplete="off">&nbsp;
 					<c:if test="${classNo == 1}">
-						<input type="button" value="중복 확인" id="btnChkHp">
-						<input type="text" name="chkHp" id="chkHp" disabled>
+						<input type="button" value="중복 확인/인증" id="btnChkHp">
+						<input type="hidden" name="chkHp" id="chkHp" disabled>
 					</c:if>
 					<c:if test="${classNo == 2}">
-						<input type="button" value="중복 확인" id="btnChkDhp">
-						<input type="text" name="chkDhp" id="chkDhp" disabled>
+						<input type="button" value="중복 확인/인증" id="btnChkDhp">
+						<input type="hidden" name="chkDhp" id="chkDhp" disabled>
 					</c:if>
+					<br><span class="error_message_box"></span>
 				</div>
 				<div class="divTerms">
 				  	<h5>러너 이용약관</h5>
@@ -232,7 +231,7 @@
 						② 이 약관은 준거법으로 한국법을 적용합니다. 
 					</div>
 					<div>
-			   		<label class="label2" for="agreechk">동의함</label>
+			   		<label class="label2" for="agreechk">동의(필수)</label>
 				  	<input type="checkbox" name="agreechk" id="agreechk" class="checkbox"/>
 					</div>
 					<h5>개인정보 수집 및 이용안내</h5>
@@ -277,7 +276,7 @@
 						- 보존 기간 : 1년
 					</div>
 					<div>
-			   		<label class="label2" for="privacychk">동의함</label>
+			   		<label class="label2" for="privacychk">동의(필수)</label>
 				  	<input type="checkbox" name="privacychk" id="privacychk" class="checkbox"/>
 					</div>
 					<h5>제 3자 개인정보 제공 동의</h5>
@@ -295,7 +294,7 @@
 						   거부하실 경우 홈페이지내 서비스 이용 제한으로 회원가입이 불가합니다.
 					</div>
 					<div>
-				   		<label class="label2" for="privacychk2">동의함</label>
+				   		<label class="label2" for="privacychk2">동의(필수)</label>
 					  	<input type="checkbox" name="privacychk2" id="privacychk2" class="checkbox"/>
 					  	<label class="label3" for="agreeAllchk">전체 동의</label>
 						<input type="checkbox" name="agreeAllchk" id="agreeAllchk" class="checkbox"/>
@@ -305,6 +304,32 @@
 					<input type="submit" id="wr_submit" value="회원가입">
 					<input type="reset" id="wr_reset" 
 						onclick="history.go(-1);return false;" value="취소">
+				</div>
+				
+				<div id="modal-wrap">
+					<div class="office-modal">
+						<div class="modalhead">
+							<h2 class="head-title">Launer</h2>
+						</div>
+						<div class="modal-body">
+							<div class="body-content">
+								<div class="body-titlebox">
+									<span class="body-title">지점 선택</span>
+								</div>
+								<div class="officelist">
+									<ul>
+										<c:forEach var="list" items="${list}">
+											<li><a href="#" class="officeListNo" onclick="test(this)"
+												data-value="${list.no}">${list.officeName}</a></li>
+										</c:forEach>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="modal-foot">
+							<span id="confirmBtn">확인</span>
+						</div>
+					</div>
 				</div>
 			</fieldset>
 		</form>

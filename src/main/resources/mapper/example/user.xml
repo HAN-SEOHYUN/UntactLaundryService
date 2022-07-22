@@ -15,8 +15,8 @@
       <selectKey order="BEFORE" keyProperty="addressNo" resultType="int">
          select users_address_seq.nextval from dual 
       </selectKey>
-      insert into users_address(no, users_no, address, address_detail, zipcode,lon_x,lat_y,entermethod)
-      values(#{addressNo}, #{no}, #{address}, #{addressDetail}, #{zipcode}, #{lonX}, #{latY}, #{entermethod})
+      insert into users_address(no, users_no, office_no, address, address_detail, zipcode,lon_x,lat_y,entermethod)
+      values(#{addressNo}, #{no}, #{officeNo}, #{address}, #{addressDetail}, #{zipcode}, #{lonX}, #{latY}, #{entermethod})
    </insert>
    <!-- 배송기사 회원가입 -->
    <insert id="insertDriver" parameterType="driverAllVo" >
@@ -24,8 +24,8 @@
          select delivery_driver_seq.nextval from dual
       </selectKey>
          insert into delivery_driver(no,users_class_no,office_no, name,email,pwd,hp,start_date)
-         values(#{no},#{userCode},1,#{name},#{email},#{pwd},#{hp},sysdate) 
-   </insert>
+         values(#{no},#{userCode},#{officeNo},#{name},#{email},#{pwd},#{hp},sysdate) 
+   </insert>	
    <!-- 가입시 계좌 정보 입력 -->
    <insert id="insertAccount" parameterType="driverAllVo" >
       <selectKey order="BEFORE" keyProperty="accInfoNo" resultType="int">
@@ -35,9 +35,12 @@
       values(#{accInfoNo}, #{no}, #{bank}, #{accNum}, #{accHolder})
 
    </insert>
-   <!-- 이메일 중복 확인 -->
+   <!-- 이메일 중복 확인, 비밀번호찾기시 소셜계정 여부-->
    <select id="chkEmail" parameterType="String"  resultType="int">
-      select count(*) from users where Email=#{email} 
+      select count(*) from users where Email=#{email} and social_login_key is null
+   </select>
+   <select id="chkSocial" parameterType="String"  resultType="int">
+      select count(*) from users where Email=#{email} and social_login_key is not null
    </select>
    <!-- 휴대전화 번호 중복 확인 -->
    <select id="chkHp" parameterType="String"  resultType="int">
@@ -115,7 +118,7 @@
       set hp=#{hp} where no=#{no}
    </update>
    <!-- 회원정보 수정(주소) -->
-   <update id="updateUserAddress" parameterType="userAddressVo">
+   <update id="updateUserAddress" parameterType="userAllVo">
       update users_address
       set address=#{address}, 
          address_detail=#{addressDetail}, 
@@ -168,7 +171,7 @@
 		where email = #{email}
 	</select>
 	<select id ="isAddressExist" parameterType="int" resultType ="int">	
-		select count(*) from users_address where users_no = #{no}
+		select count(*) from users_address where users_no = #{no} and OFFICE_NO is not null
 	</select>
 	<insert id="insertAddressOnlyPart" parameterType="userAddressVo">
 		<selectKey order="BEFORE" keyProperty="no" resultType ="int">
@@ -217,7 +220,11 @@
 		insert into today(no,users_no,access_date)
 		values(today_seq.nextval,#{usersNo},#{date})
 	</insert>
-	
+	<update id="kakaoRejoin" parameterType ="userVo">
+	  update users 
+      set out_date= null
+      where no=#{no}
+	</update>
 
 
 
@@ -232,6 +239,12 @@
    <!--박권순 시작-->
    <!--박권순 시작-->
    <!--박권순 시작-->
+    <update id="socialReJoin" parameterType="int">
+        update USERS
+        set OUT_DATE = null
+        where NO = #{no}
+    </update>
+
    <insert id="insertSnsUser">
       <selectKey keyProperty="no" resultType="int" order="BEFORE">
          select USERS_SEQ.nextval from dual

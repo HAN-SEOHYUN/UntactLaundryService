@@ -7,14 +7,14 @@
 		src="<c:url value='/js/jquery-3.6.0.min.js'/>"></script>
 	<script type="text/javascript" src="<c:url value='/js/editPwd.js'/>"></script>
 
-	<div style="background-color:#fff">
+	<div style="background-color: #fff">
 		<div id="editPwd_wrapper">
-	
+
 			<div id="editPwd_top"></div>
 			<div id="editPwd_sub">
 				<p>비밀번호 변경</p>
 			</div>
-	
+
 			<div id="editPwd_explain">
 				<ul>
 					<li><p>
@@ -37,7 +37,7 @@
 				<form method="post" name="editPwdfrm"
 					action="<c:url value='/mypage/editPwd'/>">
 					<div id="editPwd_content">
-	
+
 						<div>
 							<h3 class="editPwd_title">
 								<label for="pwd">현재 비밀번호</label>
@@ -68,7 +68,7 @@
 								src="../images/m_icon_pass.png" id="pwd_img1" class="pswdImg">
 							</span> <span class="error_next_box"></span>
 						</div>
-	
+
 						<!-- editPwd BTN-->
 						<div class="editPwd_btn_area">
 							<button type="submit" id="btneditPwd">
@@ -83,7 +83,7 @@
 				<form method="post" name="editPwdfrmDelivery"
 					action="<c:url value='/delivery/editPwd'/>">
 					<div id="editPwd_content">
-	
+
 						<div>
 							<h3 class="editPwd_title">
 								<label for="pwd">현재 비밀번호</label>
@@ -91,7 +91,7 @@
 							<span class="editPwd_box int_pass"> <input type="password"
 								id="editPwd_pwd" name="pwd" class="editPwd_int" maxlength="16">
 								<span id="editPwd_alertTxt">사용불가</span> <img
-								src="../../images/m_icon_pass.png" id="pwd_img1" class="pswdImg">
+								src="../images/m_icon_pass.png" id="pwd_img1" class="pswdImg">
 							</span> <span class="error_next_box"></span>
 						</div>
 						<div>
@@ -101,7 +101,7 @@
 							<span class="editPwd_box int_pass"> <input type="password"
 								id="editPwd_newPwd" name="newPwd" class="editPwd_int"
 								maxlength="16"> <span id="editPwd_alertTxt2"></span> <img
-								src="../../images/m_icon_pass.png" id="pwd_img1" class="pswdImg">
+								src="../images/m_icon_pass.png" id="pwd_img1" class="pswdImg">
 							</span> <span class="error_next_box"></span>
 						</div>
 						<div>
@@ -111,10 +111,10 @@
 							<span class="editPwd_box int_pass"> <input type="password"
 								id="editPwd_newPwd2" name="newPwd2" class="editPwd_int"
 								maxlength="20"> <span id="editPwd_alertTxt3"></span> <img
-								src="../../images/m_icon_pass.png" id="pwd_img1" class="pswdImg">
+								src="../images/m_icon_pass.png" id="pwd_img1" class="pswdImg">
 							</span> <span class="error_next_box"></span>
 						</div>
-	
+
 						<!-- editPwd BTN-->
 						<div class="editPwd_btn_area">
 							<button type="submit" id="btneditPwd">

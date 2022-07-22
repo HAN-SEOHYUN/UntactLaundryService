@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import BoardService from "../BoardService";
+import BoardCommentInput from "./BoardCommentInput";
 
-const BoardComment = ({detailNo, userInfo}) => {
-	const initialCommentData = {
+const BoardComment = ({detailNo, userInfo, dateReturn}) => {
+    const initialCommentData = {
         no: null,
         boardNo: null,
         content: "",
@@ -10,108 +11,144 @@ const BoardComment = ({detailNo, userInfo}) => {
         groupNo: null,
         sortNo: null,
         regdate: "",
-        delFlage: "",
+        delFlag: "",
         usersNo: null
     }
-    
+
     const [comment, setComment] = useState("");
     const [comments, setComments] = useState([initialCommentData]);
-    
+    const [reply, setReply] = useState(0);
+    const [replyComment, setReplyComment] = useState("");
+    const [replyClassName, setReplyClassName] = useState("");
+
     useEffect(() => {
-		apiCommments();
-	}, []);
-	
-	const apiCommments = () => {
-		BoardService.commentsSelectByBoardNo(parseInt(detailNo))
-			.then((response) => {
-				console.log(response.data);
+        apiCommments();
+    }, []);
+
+    const apiCommments = () => {
+        BoardService.commentsSelectByBoardNo(parseInt(detailNo))
+            .then((response) => {
+                console.log(response.data);
                 setComments(response.data.commentsList);
-			});
-	};
+            });
+    };
 
+    const apiCommentInsert = (groupNO, isComment, step, sortNo, no) => {
+        const conType = groupNO === 0 ? comment : replyComment;
 
-    const apiCommentInsert = (e) => {
         const commentsVO = {
             boardNo: detailNo,
             usersNo: userInfo.no,
-            content: comment,
-            groupNo: e.target,
+            content: conType,
+            groupNo: groupNO,
+            step,
+            sortNo
         }
 
         BoardService.commentsInsert(commentsVO)
             .then(response => {
-                alert(response.data);
+                // alert(response.data);
+                if (response.data) {
+                    apiCommments();
+                    if (isComment) {
+                        setComment("");
+                    } else {
+                        setReplyComment("");
+                        replyPart(no);
+                    }
+                } else {
+                    window.location.reload();
+                }
             });
     }
 
+    const onChangeComment = useCallback((e) => setComment(e.target.value));
+    const onChangeReplyComment = useCallback((e) => setReplyComment(e.target.value));
 
-    const commentContents = comments.map((item, index) => (
-        <div id="comments-component" key={index}>
-            <div className="out-of-step">
-                <div className="comment-info">
-                    <img src=""/>
-                    <span className="name">{item.name}</span>|
-                    <span className="regdate">{item.regdate}</span>
-                    <div className="comment-info-btn">
-                        <span className="reply">답글 달기</span>
-                        <span className="delete">삭제</span>
+    const commentContents = comments.map((item, index) => {
+        const replyChk = item.STEP === 1 ? "comments-component" :
+            item.STEP === 2 ? "comments-component reply" : "comments-component reply-reply";
+
+        if (item.DEL_FLAG === 'Y') {
+            return (
+                <div className={replyChk} key={index}>
+                    <div className="out-of-step">
+                        <div className="comment del">
+                            <p className="content">삭제된 댓글입니다.</p>
+                        </div>
                     </div>
                 </div>
-                <div className="comment">
-                    <p className="content">{item.content}</p>
+            )
+        } else if (item.DEL_FLAG === 'N') {
+            return (
+                <div className={replyChk} key={index} style={item.STEP > 1 ?
+                    {backgroundImage: "url(/launer/images/reply-icon.svg)"} : {}}>
+                    {/*<div className="reply-line"></div>*/}
+                    <div className="out-of-step">
+                        <div className="comment-info">
+                            <span className="name">{item.NAME}</span>
+                        </div>
+                        <div className="comment">
+                            <p className="content">{item.CONTENT}</p>
+                        </div>
+                        <div className="comment-info-btn">
+                            <span className="regdate">{dateReturn(new Date(item.REGDATE))}</span>
+                            <span className="reply"
+                                  onClick={() => replyPart(item.NO)}>{reply === item.NO ? "답글 취소" : "답글 달기"}</span>
+                            {parseInt(userInfo.no) === item.USERS_NO ?
+                                (<span className="delete" onClick={() => deleteReply(item.NO)}>삭제</span>) : ""}
+                        </div>
+                        {reply === item.NO &&
+                            <BoardCommentInput replyClassName={replyClassName} groupNo={item.GROUP_NO}
+                                               userInfo={userInfo}
+                                               comment={replyComment}
+                                               onChangeComment={onChangeReplyComment}
+                                               apiCommentInsert={apiCommentInsert}
+                                               step={item.STEP}
+                                               sortNo={item.SORT_NO}
+                                               no={item.NO}
+                            />}
+                    </div>
                 </div>
-            </div>
-        </div>
-    ))
-	
+            )
+        }
+    })
+
+    const deleteReply = useCallback((no) => {
+        BoardService.commentsDeleteByCommentsNo(no)
+            .then(response => {
+                // alert(response.data);
+                if (response.data) {
+                    apiCommments();
+                } else {
+                    window.location.reload();
+                }
+            });
+    });
+
+    const replyPart = useCallback((e) => {
+        if (reply === e) {
+            setReplyClassName("comment-input-part reply-dropUp");
+            setTimeout(() => {
+                setReply(0);
+            }, 210);
+            clearTimeout();
+        } else {
+            setReplyClassName("comment-input-part reply-dropDown");
+            setReply(e);
+        }
+    });
+
+
     return (
         <div id="reply-component">
             <h3 className="title">댓글</h3>
             <div>
-            	<div className="comments-controll-btn">
-            		<span>댓글 등록</span>
-		            <button onClick={() => apiCommentInsert(0)}>등록</button>
-		        </div>
-
-            	<div className="input">
-            		<input type="text" value={comment} onChange={e => setComment(e.target.value)} name="content" />
-            	</div>
-
-                {commentContents}
-            	{/*<div id="comments-component">
-            		<div className="out-of-step">
-	            		<div className="comment-info">
-	            			<img src=""/>
-	            			<span className="name">정지효</span>|
-	            			<span className="regdate">2022-07-08 15:29</span>
-	            			<div className="comment-info-btn">
-		            			<span className="reply">답글 달기</span>
-		            			<span className="delete">삭제</span>
-	            			</div>
-	            		</div>
-	            		<div className="comment">
-	            			<p className="content">원글</p>
-	            		</div>
-            		</div>
-            	</div>
-            	
-            	<div id="comments-component">
-            		<span className="step"></span>
-            		<div className="out-of-step">
-	            		<div className="comment-info">
-	            			<img src=""/>
-	            			<span className="name">정지효</span>|
-	            			<span className="regdate">2022-07-08 15:29</span>
-	            			<div className="comment-info-btn">
-		            			<span className="reply">답글 달기</span>
-		            			<span className="delete">삭제</span>
-	            			</div>
-	            		</div>
-	            		<div className="comment">
-	            			<p className="content">답글</p>
-	            		</div>
-            		</div>
-            	</div>*/}
+                <BoardCommentInput groupNo={0} userInfo={userInfo} comment={comment} onChangeComment={onChangeComment}
+                                   apiCommentInsert={apiCommentInsert}/>
+                <div className="comment-list-part">
+                    {commentContents}
+                </div>
             </div>
         </div>
     );

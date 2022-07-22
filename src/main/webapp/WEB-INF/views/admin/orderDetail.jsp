@@ -1,40 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ include file="top.jsp"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags/layouts/admin"%>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<style type="text/css">
-.sb-sidenav-footer {
-	position: absolute;
-	bottom: 0;
-	width: 225px;
-}
 
-#orders th, #orders td {
-	text-align: center;
-}
-
-        #detail {}
-        /* #detail h2 span.name {font-weight: bold; color: #000;} */
-        #detail table {margin: 10px 0 30px 0;}
-        #detail table tr td {height: 20px; padding: 5px; border-bottom: 1px solid #e6e6e6; font-size: 15px;}
-        /* #detail .h2_2 {font-size: 14px; font-weight: bold; color:#85b8cf; text-indent: 10px;} */
-        #detail table.view_2 {border-top: 3px solid #85b8cf; border-bottom: 3px solid #e6e6e6; width: 80%; margin: auto;}
-        #detail table.view_2 td.title {background: #f3fcff; text-align: center; font-weight: bold; font-size: 20px;}
-        #detail span.close {display: block; background: #eaeaea; text-align: center; font-weight: bold; cursor: pointer; padding: 5px;}
-
-#pickUp {
-	margin-top: 10px;
-	float: right;
-}
-div.pickUp{
-	margin: auto;
-	height: 45px;
-	width: 80%;
-}
-
-</style>
 
 <!--
 수거전
@@ -48,11 +18,12 @@ div.pickUp{
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
-<script type="text/javascript">
-	
-</script>
 
-<div id="layoutSidenav_content">
+<t:head>
+</t:head>
+
+<t:wrapper>
+
 	<main>
 		<div class="container-fluid px-4">
 			<h1 class="mt-4">주문상세</h1>
@@ -145,10 +116,13 @@ div.pickUp{
 
 				        </table>
 					<div class="pickUp">
-						<input type="button" value="픽업대기 처리" id="pickUp" name="pickUp"
-							disabled="disabled">
-						<input type="button" value="픽업대기 처리" id="pickUp" name="pickUp"
+						<c:if test="${map.status != '세탁중'}">
+							<input type="button" value="배송대기 처리" id="pickUp" name="pickUp" disabled="disabled">
+						</c:if>
+						<c:if test="${map.status == '세탁중'}">
+						<input type="button" value="배송대기 처리" id="pickUp" name="pickUp"
 							onclick="location.href='<c:url value="/admin/ordersUpdate?orderNo=${map.orderNo}"/>';">
+						</c:if>
 					</div>
 				</div>
 							
@@ -161,4 +135,5 @@ div.pickUp{
 		</div>
 	</main>
 
-	<%@ include file="bottom.jsp"%>
+	
+</t:wrapper>

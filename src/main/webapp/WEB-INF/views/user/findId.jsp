@@ -5,7 +5,6 @@
 	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 	<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 	<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-	<link rel="stylesheet" href="<c:url value="/css/user/findIdPwd.css"/>"/>
 <script type="text/javascript" src="<c:url value='/js/jquery-3.6.0.min.js'/>"></script>
 <script type="text/javascript">
 $(function(){
@@ -33,9 +32,9 @@ $(function(){
 	$("#confirm").click(function(){
     	modalClose();
 	});
-	$("#close").click(function(){
-    	modalClose();
-	});
+	//$("#close").click(function(){
+    	//modalClose();
+	//});
 	function modalClose(){
 		$modal.animate({
 			opacity: 0
@@ -63,7 +62,8 @@ $(function(){
 			</div>
 			<div class="modal-foot">
 			<span class="modal-btn confirm" id="confirm">확인</span>
-			<span class="modal-btn close" id="close">창 닫기</span>
+			<span class="modal-btn close" id="close" 
+				onClick="location.href='<c:url value='/user/findPwd'/>'">비밀번호 찾기</span>
 			</div>
 		</div>
 	</div>
@@ -77,7 +77,7 @@ $(function(){
 		</div>
 		<form name="findIdfrm" method="post" 
 			action="<c:url value='/user/findId'/>">
-				<div class="findIdPwdsubWrap">
+				<div class="findIdPwdfrm_Wrap">
 					<div id="findIdPwdbox">
 			            <p class="memberType"><strong>회원유형</strong>
 			            	<select id="searchType" name="searchType">
@@ -90,7 +90,7 @@ $(function(){
 						</p>
 						<p id="mobile_view"><strong>휴대폰 번호</strong> 
 							<input type="text" name="hp" id="hp" maxlength="11" 
-								placeholder="-를 제외하고 입력해주세요">
+								placeholder="-를 제외하고 입력해주세요" autocomplete="off">
 						</p>
 						<div class="findIdPwdBtnWrap">
                 			<button class="findIdPwdBtn" id="findIdBtn">확인</button>

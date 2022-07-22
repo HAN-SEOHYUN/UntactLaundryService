@@ -1,6 +1,7 @@
 package com.ez.launer.user.controller;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.ez.launer.office.model.OfficeVO;
 import com.ez.launer.user.model.DriverAllVO;
 import com.ez.launer.user.model.SHA256Encryption;
+import com.ez.launer.user.model.SmsSender;
 import com.ez.launer.user.model.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,12 +29,16 @@ public class DeliveryJoinController {
     
     private final UserService userService;
     private final SHA256Encryption sha256;
+    private final SmsSender smsSender;
     
     @GetMapping("/join")
     public String register(Model model) {
         logger.info("배송기사 회원가입 화면");
+        
+        List<OfficeVO> list= userService.selectOffice();
 
         model.addAttribute("classNo", 2);
+        model.addAttribute("list", list);
         return "/user/join";
     }
     
@@ -48,7 +55,9 @@ public class DeliveryJoinController {
 		logger.info("배송기사 회원가입 결과, cnt={}", cnt);
 		
 		int cnt2=userService.insertAccount(vo);
-		logger.info("주소입력 결과, cnt2={}", cnt2);
+		logger.info("계좌 입력 결과, cnt2={}", cnt2);
+		
+		List<OfficeVO> list= userService.selectOffice();
 
 		String msg="회원가입 실패", url="/delivery/join";
 		if(cnt>0 && cnt2>0) {
@@ -80,14 +89,21 @@ public class DeliveryJoinController {
 		return "/delivery/checkDmail";
 	}
 	@RequestMapping("/checkDhp")
-	public String checkHp(@RequestParam String hp, Model model) {
+	public String checkDhp(@RequestParam(required=false) String hp, Model model) {
 		logger.info("배송기사 휴대전화 번호 중복확인, 파라미터 hp={}", hp);
 		
 		int result=0;
 		if(hp!=null && !hp.isEmpty()) {		
 			result=userService.chkDhp(hp);
-			
 			logger.info("배송기사 휴대전화 번호 중복확인 결과, result={}", result);
+			if(result==userService.USABLE_HP) {
+				int randomNum = (int)(Math.random() * (999999 - 100000 + 1)) + 100000;
+				String randomCode=Integer.toString(randomNum);
+				logger.info("인증번호 생성 체크, randomCode={}", randomCode);
+				
+				model.addAttribute("randomCode", randomCode);
+				smsSender.certifySms(hp, randomCode);
+			}
 		}
 		
 		model.addAttribute("result", result);
@@ -96,5 +112,5 @@ public class DeliveryJoinController {
 		
 		return "/delivery/checkDhp";
 	}
-
+	
 }

@@ -1,4 +1,4 @@
-
+console.log("");
  $(function() {
 		 var tabNo = $('#tabNo').val();
 		 if(tabNo==1){	 
@@ -58,6 +58,13 @@
         data: formData,officeNo,
         success: function (managerMap) {
 			appenToTable(managerMap);
+			$('#name').val("");
+			$('#email').val("");
+			$('#pwd').val("");
+			$('#pwd2').val("");
+			$('#hp').val("");
+			
+			
         },
         error: function() {
             alert("관리자 등록실패");
@@ -111,8 +118,8 @@ function appenToTable(managerMap){
         "<td>" + managerMap.EMAIL + "</td>" +
         "<td>" + managerMap.HP + "</td>"+
         //여기
-        "<td><fmt:formatDate value='" + managerMap.OFFICE_NAME + "'pattern ='yyyy-MM-dd'/></td>"+
-        "<td><input type='button' value='삭제' onclick=''></td>"+"<tr>"
+        "<td><span>" + managerMap.OFFICE_NAME + "</span></td>"+
+        "<td><input type='button' value='삭제' onclick='deleteUser(" + managerMap.NO + ")'></td><tr>"
     );
 	  $("#managerTbody").append($cellsOfRow);
 	  $('#addAdmin').modal("hide");

@@ -42,6 +42,8 @@ h3 {
   box-sizing: border-box;
   position: relative;
   border-radius: 7px;
+  margin-bottom: 7px;
+  
 }
 
 .int {
@@ -51,6 +53,7 @@ h3 {
   height: 29px;
   border: none;
   font-size: 15px;
+  color:black;
 }
 
 
@@ -77,8 +80,9 @@ h3 {
 
 .error_next_box {
   margin-top: 9px;
-  font-size: 12px;
+  font-size: 13px;
   color: red;
+  margin-left: 5px;
 }
 
 #alertTxt {
@@ -91,7 +95,8 @@ h3 {
 }
 
 .useredit_btn_area {
-  margin: 30px 0 91px;
+ 	margin-top: 30px;
+ 	padding-bottom: 60px;
 }
 
 #btnuseredit {
@@ -111,7 +116,127 @@ h3 {
     margin-left: 15px;
     border-radius: 3px;
 }
+#btnChkDhp{
+	border: solid 1px #dadada;
+    margin-left: 15px;
+    border-radius: 3px;
+}
+#btnChkHp{
+	border: solid 1px #dadada;
+    margin-left: 15px;
+    border-radius: 3px;
+}
+
 .accountNumber_sub{
 	font-size: 12px;
 	color: gray;
 }
+select{
+	height:51px;
+	margin-right: 5px;
+	border-radius: 7px;
+	border: solid 1px #dadada;
+}
+.useredit_title span{
+	font-size: 12px;
+	color: gray;
+	
+}
+
+.officeBtnArea{
+	display: inline-block;
+	margin-right: 17px;
+}
+
+#modal-wrap{
+	width:100%;
+  	background-color:rgba(0,0,0,.3);
+	justify-content:center;
+	align-items:center;
+	position:fixed;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	z-index: 999;
+	display:none;
+	padding:15px;
+	opacity: 1;
+	}
+	
+	.office-modal{
+		width:100%;
+		max-width:700px;
+		border-radius:10px;
+		overflow:hidden;
+		background-color:#31363d;
+		box-shadow: 5px 10px 10px 1px rgba(0,0,0,.3);
+		position:absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+	}
+	.modal-head{
+		width:100%;
+		height:50px;
+		display:flex;
+		align-items:center;
+		justify-content:center;
+	}
+	.head-title {
+	    font-size: 38px;
+	    font-weight: 700;
+	    color: #fff;
+	    letter-spacing: -3px;
+	    text-align: center;
+	}
+	.modal-body{
+		width:100%;
+		background-color:#fff;
+	}
+	.body-content{
+		padding:30px 0 30px 0;
+	}
+	.modalhead {padding: 10px 0;}
+	.body-titlebox{
+		text-align:center;
+		width:100%;
+		height:40px;
+		margin-bottom:10px;
+	}
+	.body-title{
+		font-size: 25px;
+		font-weight: 600;
+		text-align: center;
+	}
+	.modal-foot{
+		width:100%;
+		height:50px;
+	}
+	#confirmBtn{
+		display:inline-flex;
+		width:100%;
+		height:100%;
+		justify-content:center;
+		align-items:center;
+		color:#fff;
+		cursor:pointer;
+	}
+	
+	.officelist{
+		text-align:center;
+	}
+	.officelist li {
+		width:110px;
+		display:inline-block;
+		padding: 10px 5px 10px 0;
+		cursor:pointer;
+		font-size:20px;
+		font-weight: 550;
+	}
+	.officelist li:hover {
+		color:#466391;
+	}
+	.officelist .on a{
+		color:#466391;
+	}

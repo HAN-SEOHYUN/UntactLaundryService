@@ -51,9 +51,11 @@ public class DriverloginController {
 			logger.info("배송기사 로그인 처리-회원정보 조회결과 drVo={}", drVo);
 			
 			HttpSession session=request.getSession();
+
 			session.setAttribute("dmail", dvo.getDmail());
 			session.setAttribute("name", drVo.getName());
 			session.setAttribute("deliveryNo", drVo.getNo());
+			session.setAttribute("classNo", String.valueOf(drVo.getUsersClassNo()));
 			logger.info("세션 확인 session={}",session);
 			
 			Cookie ck2 = new Cookie("chkDmail", dvo.getDmail());
